@@ -1,9 +1,20 @@
 from room import Room
 from player import Player
+from item import Item
+
+# create item objects that can be in the rooms or held by the player
+rock = Item('Rock')
+flashlight = Item('Flashlight')
+toilet_paper = Item('Toilet Paper')
+umbrella = Item('Umbrella')
+bag = Item('Bag')
+shoes = Item('Shoes')
+computer = Item('Computer')
+bottle = Item('Bottle')
+guitar = Item('Guitar')
 
 # Declare all the rooms
 # dictionary of room objects
-
 room = {
     'outside':  Room("Outside Cave Entrance",
                      "North of you, the cave mount beckons"),
@@ -22,24 +33,23 @@ to north. The smell of gold permeates the air."""),
 chamber! Sadly, it has already been completely emptied by
 earlier adventurers. The only exit is to the south."""),
 
-'bedroom': Room("The Master Bedroom", """Upon entering the open door, you find yourself in a large,
+    'bedroom': Room("The Master Bedroom", """Upon entering the open door, you find yourself in a large,
 ornately decorated bedroom. Glass french doors filter in sunlight from the west. 
 An archway with no light sits to the south.
 Another door lies to the north."""),
 
-'bathroom': Room("The Bathroom", """You've found the ever important bathroom. Stop if you need, 
-but otherwise, get back to the bedroom and keep searching! The door now lies to the south of you."""),
+    'bathroom': Room("The Bathroom", """You've found the ever important bathroom. Stop if you need, 
+but otherwise, get back to the bedroom and keep searching! The door now lies to the south of you.""",
+ computer),
 
-'closet': Room("The Closet", """You are now in a closet so large that a family of four
+    'closet': Room("The Closet", """You are now in a closet so large that a family of four
 could live in it comfortably. With fine dresses on one end and suits on the other, this is not
 the treasure you search for. The arch is now to the north of you."""),
 
-'balcony': Room("The balcony", """As you push your way through the french doors and into the 
+    'balcony': Room("The balcony", """As you push your way through the french doors and into the 
 crisp evening air, you find that there is nowhere to go but back. Return to the bedroom 
 through the french doors that now lie to the east of you."""),
 }
-
-
 
 # Link rooms together
 
@@ -68,7 +78,7 @@ room['balcony'].e_to = room['bedroom']
 
 room['closet'].n_to = room['bedroom']
 
-
+# create easier to follow representations of the room objects
 outside = room['outside']
 foyer = room['foyer']
 overlook = room['overlook']
@@ -78,6 +88,16 @@ bedroom = room['bedroom']
 closet = room['closet']
 bathroom = room['bathroom']
 balcony = room['balcony']
+
+# add items to different rooms
+outside.add_object(rock)
+foyer.add_object(umbrella)
+bathroom.add_object(toilet_paper)
+overlook.add_object(flashlight)
+'''print(len(outside.objects))
+print(len(foyer.objects))
+print(len(bathroom.objects))
+print(len(overlook.objects))'''
 
 # test = Player('Nate', outside)
 # print(test.current_room.n_to.name)
@@ -91,15 +111,137 @@ name = input('Please enter your player name: ')
 print('------------------------------------')
 print('------------------------------------')
 
-
+# instantiate a new player with name
+# and who is currently 'outside'
 player = Player(name, outside)
 
+# define while loop condition
 x = 0
 # Write a loop that:
 while x == 0:
     # * Prints the current room name
+    print(f'Current room: {player.current_room.name}')
+
     # * Prints the current description (the textwrap module might be useful here).
-    print(player)
+    print(player.current_room.description)
+
+    # prints what items are available in the room
+    print(f'Available items in this room: ')
+    for item in player.current_room.objects:
+        print(item)
+
+    print(f'Items in your inventory: ')
+    for item in player.inventory:
+        print(item)
+
+    '''# ADD A FOR LOOP HERE TO ADD DIFFERENT ITEMS TO YOUR INVENTORY
+    # are there any objects in this room to begin with?
+    if len(player.current_room.objects) > 0:
+        for item in player.current_room.objects:
+            print(f'Would you like to add <{item}> to you inventory?')
+            answer = input('Please type y for yes or n for no: ')
+            if answer == 'y':
+                # item = player.current_room.objects[0]
+                # add object to player inventory
+                player.grab(item)
+                print(f'Nice! Now you have <{item.name}> in your inventory!')
+                print('------------------------------------')
+                # drop objects from the room
+                player.current_room.drop_object(player.current_room.objects[0])
+                # check to make sure the room now has no objects
+                # * Prints the current room name
+                print(f'Current room: {player.current_room.name}')
+
+                # * Prints the current description (the textwrap module might be useful here).
+                print(player.current_room.description)
+
+                # prints what items are available in the room
+                print(f'Available items in this room: ')
+                for item in player.current_room.objects:
+                    print(item)
+
+                print(f'Items in your inventory: ')
+                for item in player.inventory:
+                    print(item)
+                x = 0
+            elif answer == 'n':
+                print('Got it!')
+                x = 0
+            else:
+                input('Invalid entry! Type y for yes or n for no')
+    print('------------------------------------')
+
+''' 
+    print('Would you like to add any items to your inventory from this room?')
+    answer = input('Please type y for yes or n for no: ')
+    # start new while loop to add object to inventory
+    # This while loop is for adding items to the player's inventory
+    x = 3
+    while x == 3:
+        if answer == 'y':
+            item = player.current_room.objects[0]
+            # add object to player inventory
+            player.grab(item)
+            print(f'Nice! Now you have <{item.name}> in your inventory!')
+            print('------------------------------------')
+            # drop objects from the room
+            player.current_room.drop_object(player.current_room.objects[0])
+            # check to make sure the room now has no objects
+            # * Prints the current room name
+            print(f'Current room: {player.current_room.name}')
+
+            # * Prints the current description (the textwrap module might be useful here).
+            print(player.current_room.description)
+
+            # prints what items are available in the room
+            print(f'Available items in this room: ')
+            for item in player.current_room.objects:
+                print(item)
+
+            print(f'Items in your inventory: ')
+            for item in player.inventory:
+                print(item)
+            x = 0
+        elif answer == 'n':
+            print('Got it!')
+            x = 0
+        else:
+            input('Invalid entry! Type y for yes or n for no')
+    
+    print(f'Would you like to drop any items from your inventory?')
+    answer = input('Please type y for yes or n for no: ')
+    print('------------------------------------')
+
+    # Start a new while loop to give the player to drop objects from their inventory
+    x = 4
+    while x == 4:
+        if answer == 'y':
+            print('Here are the items that are currently in your inventory: ')
+            # print the names of the inventory objects
+            for item in player.inventory:
+                print(item.name)
+            drop_item = input('Please type the name of the item you would like to drop EXACTLY as you see it spelled: ')
+
+            # loop through the player inventory again
+            for item in player.inventory:
+                # if the player entered the name of one of the items, drop it from inventory
+                if drop_item == item.name:
+                    player.drop(item)
+                    # add the dropped item back to the room
+                    player.current_room.add_object(item)
+                    print(f'You have succesfully dropped <{drop_item}> from your inventory')
+            x = 0
+
+        elif answer == 'n':
+            print('Got it!')
+            x = 0
+        else:
+            input('Invalid entry! Type y for yes or n for no')               
+            # re-enter the original while loop
+            
+
+        
+
     print('------------------------------------')
     print('------------------------------------')
     # * Waits for user input and decides what to do.
@@ -108,7 +250,7 @@ while x == 0:
     print('------------------------------------')
     print('------------------------------------')
     
-    x += 1
+    x = 1
 
     while x == 1:
     # If the user enters a cardinal direction, attempt to move to the room there.
